@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "dist/es6",
+    "lib": [
+      "es5",
+      "dom",
+      "es2015.promise",
+      "es2015.core",
+      "es2015.iterable",
+      "es2015.collection"
+    ],
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["mocha", "chai", "chai-as-promised", "node"]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
