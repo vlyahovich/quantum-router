@@ -212,6 +212,15 @@ describe('Router', function () {
         expect(url).to.equal('/cond/test?q=cde');
     });
 
+    it('should reverse to empty if some required params is missing', function () {
+        let url = router.reverse('cond', {
+            cond: null,
+            q: 'cde'
+        });
+
+        expect(url).to.equal('#');
+    });
+
     it('should match event', function () {
         let event = {
             id: 'event1',

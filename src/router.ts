@@ -91,7 +91,7 @@ export class Router {
         this.routes.push(this.buildRouteHandler(regexp, name, names));
     }
 
-    protected routeToRegexp(route: string): {names: string[], regexp: RegExp} {
+    protected routeToRegexp(route: string): { names: string[], regexp: RegExp } {
         let names: string[] = [],
             replacedRoute = route
                 .replace(optionalParam, (match, value) => `(?:${value})?`)
@@ -123,7 +123,7 @@ export class Router {
         }
     }
 
-    public normalizeParam(value: string): string|number|boolean {
+    public normalizeParam(value: string): string | number | boolean {
         value = decodeURIComponent(value);
 
         if (value === 'true' || value === 'false') {
@@ -283,7 +283,7 @@ export class Router {
         }
     }
 
-    public navigate(url: string, params: {replace?: boolean, trigger?: boolean, state?: Object} = {}): RouterEventPromise {
+    public navigate(url: string, params: { replace?: boolean, trigger?: boolean, state?: Object } = {}): RouterEventPromise {
         let {replace = false, trigger = true, state} = params;
 
         if (typeof history === 'undefined') {
@@ -303,9 +303,10 @@ export class Router {
         }
     }
 
-    public reverse(routeName: string, params: Object = {}): string|void {
+    public reverse(routeName: string, params: Object = {}): string | void {
         let route = this.index[routeName],
-            keys = Object.keys(params);
+            keys = Object.keys(params),
+            reqMiss = [];
 
         if (!route) {
             return null;
@@ -313,7 +314,7 @@ export class Router {
 
         let accept = (value) => value != null && value !== '';
 
-        let interpolate = (str) => {
+        let interpolate = (str, err?) => {
             return str.replace(/:([^)/]+)/g, (match, name) => {
                 let index = keys.indexOf(name);
 
@@ -322,6 +323,10 @@ export class Router {
 
                     return encodeURIComponent(String(params[name]));
                 } else {
+                    if (err) {
+                        err.push(name);
+                    }
+
                     return match;
                 }
             });
@@ -337,7 +342,14 @@ export class Router {
             }
         });
 
-        route = interpolate(route);
+        route = interpolate(route, reqMiss);
+
+        if (reqMiss.length) {
+            console.warn(`Cannot reverse route "${routeName}"`,
+                `Falling back to empty hash string: missing required params are [${reqMiss.join()}]`);
+
+            return '#';
+        }
 
         if (keys.length) {
             let query = [];
@@ -356,7 +368,7 @@ export class Router {
         return route;
     }
 
-    public reverseReplace(replaceQuery: Object): string|void {
+    public reverseReplace(replaceQuery: Object): string | void {
         let {name, params, query} = this.lastEvent;
 
         return this.reverse(name, Object.assign({}, params, query, replaceQuery));
