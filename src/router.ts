@@ -36,6 +36,7 @@ export class RouterError extends Error {
         if (error instanceof Error) {
             this.message = error.message;
             this.stack = error.stack;
+            this.status = error.status;
         } else {
             if (typeof error.status !== 'undefined') { // xhr
                 this.status = error.status;
