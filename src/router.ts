@@ -6,6 +6,7 @@
 import {
     RouterEvent,
     RouterOptions,
+    RouterUrlMeta,
     RouterEventHandler,
     RouterEventPromise,
     RouterMiddleware,
@@ -165,15 +166,27 @@ export class Router {
         return query;
     }
 
-    public match(input: string, state?: Object): RouterEventPromise {
+    public getUrlMeta(input: string, state?: Object): RouterUrlMeta {
         let [baseUrl, hash = ''] = input.replace(/^https?:\/\/[^\/]+/, '').split('#'),
             [url] = baseUrl.split('?'),
             query = this.buildQuery(baseUrl),
-            event;
+            event: RouterEvent;
 
         for (let index = 0; index < this.routes.length && !event; index++) {
             event = this.routes[index](url, query, hash, state);
         }
+
+        return {
+            baseUrl,
+            url,
+            hash,
+            query,
+            event
+        };
+    }
+
+    public match(input: string, state?: Object): RouterEventPromise {
+        let {url, query, hash, event} = this.getUrlMeta(input, state);
 
         let promise = event ?
             Promise.resolve(event) :
@@ -181,8 +194,12 @@ export class Router {
 
         if (!event) {
             event = {
+                url,
+                query,
+                hash,
                 name: 'error',
                 code: 404,
+                stopPropagation: stopPropagation,
                 state
             };
         }

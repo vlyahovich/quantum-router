@@ -3,10 +3,10 @@ import {RouterError} from './router';
 export interface RouterEvent {
     url: string;
     name: string;
-    params: Object;
+    params?: Object;
     query: Object;
     hash: Object;
-    code?: string;
+    code?: number;
     state?: Object;
     stopPropagation: Function;
     propagationStopped?: boolean;
@@ -14,6 +14,14 @@ export interface RouterEvent {
 
 export interface RouterOptions {
     routes: Object;
+}
+
+export interface RouterUrlMeta {
+    baseUrl: string;
+    url: string;
+    hash: string;
+    query: Object;
+    event: RouterEvent;
 }
 
 export declare type RouterMiddlewareSuccess = (event: RouterEvent) => RouterEventPromise;
