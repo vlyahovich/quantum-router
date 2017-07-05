@@ -1,6 +1,6 @@
 {
   "name": "quantum-router",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Routing system for SPA",
   "author": {
     "name": "Vadim Liakhovich",
