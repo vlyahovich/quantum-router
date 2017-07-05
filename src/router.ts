@@ -257,7 +257,7 @@ export class Router {
         this.middleware.push([success, error]);
     }
 
-    public start(): RouterEventPromise {
+    public bindListeners() {
         if (typeof window !== 'undefined') {
             this.popstateHandle = this.windowPopStateHandle.bind(this);
 
@@ -269,6 +269,10 @@ export class Router {
 
             document.body.addEventListener('click', this.clickHandle);
         }
+    }
+
+    public start(): RouterEventPromise {
+        this.bindListeners();
 
         return this.matchCurrentUrl();
     }
