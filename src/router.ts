@@ -26,6 +26,7 @@ let stopPropagation = function () {
 };
 
 export class RouterError extends Error {
+    originalError: any;
     event?: RouterEvent;
     status?: number;
 
@@ -53,6 +54,7 @@ export class RouterError extends Error {
             }
         }
 
+        this.originalError = error;
         this.event = event;
     }
 }
