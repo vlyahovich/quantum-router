@@ -62,16 +62,18 @@ export class RouterError extends Error {
 export class Router {
     protected routes: RouterEventHandler[];
     protected index: Object;
+    protected aliases: Object;
     protected middleware: RouterMiddleware[];
     protected lastEvent: RouterEvent;
     private resolveMiddlewareDebounced: Function;
     private popstateHandle: EventListener;
     private clickHandle: EventListener;
 
-    constructor({routes}: RouterOptions) {
+    constructor({routes, aliases}: RouterOptions) {
         this.routes = [];
         this.index = {};
         this.middleware = [];
+        this.aliases = aliases || {};
 
         this.resolveMiddlewareDebounced = promiseDebounce(this.resolveMiddleware, this, (promise, event) => event.id);
 
@@ -177,6 +179,16 @@ export class Router {
 
         for (let index = 0; index < this.routes.length && !event; index++) {
             event = this.routes[index](url, query, hash, state);
+        }
+
+        let alias = this.aliases[event.name];
+
+        if (alias) {
+            Object.assign(event, {
+                name: alias,
+                origName: event.name,
+                isAlias: true
+            });
         }
 
         return {

@@ -3,6 +3,8 @@ import {RouterError} from './router';
 export interface RouterEvent {
     url: string;
     name: string;
+    origName?: string;
+    isAlias?: boolean;
     params?: Object;
     query: Object;
     hash: Object;
@@ -14,6 +16,7 @@ export interface RouterEvent {
 
 export interface RouterOptions {
     routes: Object;
+    aliases?: Object;
 }
 
 export interface RouterUrlMeta {

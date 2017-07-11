@@ -9,7 +9,13 @@ describe('Router', function () {
             routes: {
                 '/': 'home',
                 '/test/:id/:name/page': 'test',
-                '/cond/:name(/:cond)': 'cond'
+                '/cond/:name(/:cond)': 'cond',
+                '/home/alias': 'homeAlias',
+                '/anotherHome/alias': 'anotherHomeAlias'
+            },
+            aliases: {
+                homeAlias: 'home',
+                anotherHomeAlias: 'home'
             }
         });
     });
@@ -284,5 +290,37 @@ describe('Router', function () {
         return router.match('/').then(() => {
             expect(neverCalled).to.equal(true);
         });
+    });
+
+    it('should support aliases', function () {
+        let queue = [];
+
+        router.use((event) => {
+            queue.push(event.name);
+        });
+
+        return router.match('/')
+            .then(() => router.match('/home/alias'))
+            .then(() => router.match('/anotherHome/alias'))
+            .then(() => {
+                expect(queue).to.eql(['home', 'home', 'home']);
+            });
+    });
+
+    it('should store original name reference for aliases', function () {
+        let queue = [];
+
+        router.use((event) => {
+            if (event.isAlias) {
+                queue.push(event.origName);
+            }
+        });
+
+        return router.match('/')
+            .then(() => router.match('/home/alias'))
+            .then(() => router.match('/anotherHome/alias'))
+            .then(() => {
+                expect(queue).to.eql(['homeAlias', 'anotherHomeAlias']);
+            });
     });
 });
