@@ -11,7 +11,8 @@ describe('Router', function () {
                 '/test/:id/:name/page': 'test',
                 '/cond/:name(/:cond)': 'cond',
                 '/home/alias': 'homeAlias',
-                '/anotherHome/alias': 'anotherHomeAlias'
+                '/anotherHome/alias': 'anotherHomeAlias',
+                '/*path': 'page404'
             },
             aliases: {
                 homeAlias: 'home',
@@ -96,6 +97,21 @@ describe('Router', function () {
                     id: 1,
                     name: 2
                 },
+                query: {},
+                hash: '',
+                state: undefined,
+                stopPropagation: event.stopPropagation
+            });
+        });
+    });
+
+    it('should match page 404', function () {
+        return router.match('/test/page/not/found').then((event) => {
+            expect(event).to.eql({
+                id: event.id,
+                url: '/test/page/not/found',
+                name: 'page404',
+                params: {},
                 query: {},
                 hash: '',
                 state: undefined,
@@ -225,6 +241,12 @@ describe('Router', function () {
         });
 
         expect(url).to.equal('#');
+    });
+
+    it('should reverse page404 route', function () {
+        let url = router.reverse('page404', {});
+
+        expect(url).to.equal('/');
     });
 
     it('should match event', function () {

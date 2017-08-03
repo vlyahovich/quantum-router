@@ -387,6 +387,8 @@ export class Router {
             return '#';
         }
 
+        route = route.replace(splatParam, '');
+
         if (keys.length) {
             let query = [];
 
