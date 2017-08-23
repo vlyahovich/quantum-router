@@ -239,6 +239,16 @@ export class Router {
         return this.match(input, event.state);
     }
 
+    public matchRouterEvent(event: RouterEvent): RouterEventPromise {
+        let promise = event ?
+            Promise.resolve(event) :
+            Promise.reject(new Error(`event should be passed`));
+
+        this.lastEvent = event;
+
+        return this.resolveMiddlewareDebounced(promise, event);
+    }
+
     protected resolveMiddleware(promise: Promise<any>, event: RouterEvent): RouterEventPromise {
         return this.middleware.reduce((promise, [success, error]) => {
             let resultPromise = promise;

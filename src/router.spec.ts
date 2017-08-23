@@ -285,6 +285,14 @@ describe('Router', function () {
         });
     });
 
+    it('should match RouterEvent', function () {
+        let {event} = router.getUrlMeta('/cond/1/2');
+
+        return router.matchRouterEvent(event).then((evt) => {
+            expect(evt).to.equal(event);
+        });
+    });
+
     it('should debounce matches', function () {
         let event1Called = false,
             event2Called = false;
