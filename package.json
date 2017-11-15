@@ -14,6 +14,7 @@
   },
   "main": "dist/es5/router.js",
   "esnext:main": "dist/es6/router.js",
+  "types": "dist/es5/router.d.ts",
   "repository": "git@github.com:vlyahovich/quantum-router.git",
   "devDependencies": {
     "@types/chai": "^3.4.34",
